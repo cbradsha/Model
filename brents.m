@@ -3,7 +3,7 @@ function [p, error_stroke,a,below,above] = brents(p,a,error_brents)
 
 if p.brent == 1
     p.x_stroke_brent(a) = p.x_stroke;
-    if a >= 2
+    if a >= 2   %a greater than 1
         
         if p.x_stroke_brent(a)< p.x_max
             p.below = a;
@@ -37,7 +37,7 @@ if p.brent == 1
         %p.P_brent(a+1) = p.P_brent(a) - (p.x_stroke_brent(a) -
         %p.x_max)*(p.P_brent(a) - p.P_brent(a-1))/(p.x_stroke_brent(a) - p.x_stroke_brent(a-1));
         error_stroke = abs(p.x_max - p.x_stroke_brent(a));
-
+        
         a=a+1;
          
     else  %a == 1
