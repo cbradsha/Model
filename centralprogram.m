@@ -90,7 +90,9 @@ try
 
     %pc_flag = input('Is this run on a server or PC without Excel COM Server? (1 - yes, 0 - no)');
     %pc_flag = 1;
-    pc_flag = 0;
+    %pc_flag = 0;
+    
+    pc_flag=getflag();
     
     if pc_flag == 0
         %Note to shut down Excel
