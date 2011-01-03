@@ -250,23 +250,23 @@ try
         error_brents = 0.0000005;    %0.5 microns
         error_stroke = 1;
         
-        while error_stroke > error_brents   %a loop, brents method to back out power for full stroke
+    while error_stroke > error_brents   %a loop, brents method to back out power for full stroke
             
-            %Initialze residuals and convergence loop iteration counter
-            k=1;
-            dT_loop=1;
-            drho_loop=1;
-            dT_cv2_loop=1;
-            drho_cv2_loop=1;
-            dT_loop_k=1;
-            drho_loop_k=1;
-            dT_cv2_loop_k=1;
-            drho_cv2_loop_k=1;
-            dx_piston=1;
-    
-            if p.brent == 1    
-                p.P_electric = p.P_brent(a);
-            end
+        %Initialze residuals and convergence loop iteration counter
+        k=1;
+        dT_loop=1;
+        drho_loop=1;
+        dT_cv2_loop=1;
+        drho_cv2_loop=1;
+        dT_loop_k=1;
+        drho_loop_k=1;
+        dT_cv2_loop_k=1;
+        drho_cv2_loop_k=1;
+        dx_piston=1;
+
+        if p.brent == 1    
+            p.P_electric = p.P_brent(a);
+        end
      
 
         %% Initalize Vectors
@@ -850,6 +850,17 @@ try
             if p.brent == 1
                 P_electric_save(l) = p.P_brent(a);
                 p.P_electric = p.P_brent(a);      
+                
+                if a == 50
+                    error_brents= 0.000005; % 5 microns
+                elseif a==60
+                    error_brents= 0.00001; %10 microns
+                elseif a==80
+                    error_brents= 0.00005; %50 microns
+                elseif a>100
+                    error_brents= 1;
+                end
+                
             end
             
         end     %end a loop
