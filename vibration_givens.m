@@ -32,7 +32,14 @@ L_load_2=num_inputs(53);
 %k_mech=8647.5;          %Mechanical Stiffness of Springs (N/m)
 k_mech=num_inputs(44);
 %k_mech=8000;
-f_friction=num_inputs(45);          %friction factor for dry friction between teflon piston and aluminum cylinder
+
+model_exist = exist('friction_model','file');
+if model_exist == 2
+    %new friction model
+    f_friction=friction_model(num_inputs);
+else
+    f_friction=num_inputs(45);
+end
 
 % % Initial Conditions for vibration model
 x_piston_i=x_o;
