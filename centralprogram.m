@@ -249,7 +249,7 @@ try
         a = 1;              %loop iteration variable
         p.P_brent(1) = 5;   %lower power guess
         p.P_brent(2) = 10; %second lower power guess
-        error_brents = 0.0000005;    %0.5 microns
+        error_brents = 0.00000005;    %0.05 microns
         error_stroke = 1;
         
     while error_stroke > error_brents   %a loop, brents method to back out power for full stroke
@@ -701,7 +701,8 @@ try
                 W_dot_friction_ave = sum(W_dot_friction)/(1000*length(W_dot_friction)); %converted to kW
                 
                 %Heat Transfer estimations, numerically integrated.
-                Q_dot(k)=((trapz(Q)*(t(2)-t(1)))/p.Period)+W_dot_friction_ave;
+                %Q_dot(k)=((trapz(Q)*(t(2)-t(1)))/p.Period)+W_dot_friction_ave;
+                Q_dot(k)=((trapz(Q)*(t(2)-t(1)))/p.Period);
                 Q_dot_cv2(k)=(trapz(Q_cv2)*(t(2)-t(1)))/p.Period;
 
                 T_w(k+1)=(Q_dot(k)+Q_dot_cv2(k))*1000*p.R_shell+p.T_amb;
