@@ -704,7 +704,7 @@ try
                 Q_dot(k)=((trapz(Q)*(t(2)-t(1)))/p.Period)+W_dot_friction_ave;
                 Q_dot_cv2(k)=(trapz(Q_cv2)*(t(2)-t(1)))/p.Period;
 
-                T_w(k+1)=(Q_dot(k)+Q_dot_cv2(k))*1000*p.R_shell+p.T_amb;
+                T_w(k+1)=(-Q_dot(k)-Q_dot_cv2(k))*1000*p.R_shell+p.T_amb;
                 
                 %Diagnostic values
                 m_change(k) = m(end) - m(1);
