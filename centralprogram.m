@@ -563,6 +563,7 @@ try
 
                     %% Instantaneous Heat Transfer in control volumes
 
+                    p.f_list=f_list(l);
                     [ Q(i) ] = Ins_HT( T(i),rho(i),T_w(k),V(i),dV(i),x_piston(i),x_dot_piston(i),p);
 
                     [ Q_cv2(i) ] = Ins_HT_cv2( T_cv2(i),rho_cv2(i),T_w(k),V_cv2(i),dV_cv2(i),x_dot_piston(i),p.Q_motor,p);
@@ -695,8 +696,12 @@ try
                 eta_o(k)=(m_dot(k)*(p.h_2_s-p.h_in)*1000)/(p.P_electric*2);      %W_dot is in kW
                 eta_vol(k)=(m_dot(k))/(p.rho_i*f_list(l)*(max(x_piston_m)-min(x_piston_m))*p.Ap);
                 
+                %Power consumed by friction
+                W_dot_friction = (c_eff - c_gas)*p.x_max*f_list(l)^2;
+                W_dot_friction_ave = sum(W_dot_friction)/(1000*length(W_dot_friction)); %converted to kW
+                
                 %Heat Transfer estimations, numerically integrated.
-                Q_dot(k)=(trapz(Q)*(t(2)-t(1)))/p.Period;
+                Q_dot(k)=((trapz(Q)*(t(2)-t(1)))/p.Period)+W_dot_friction_ave;
                 Q_dot_cv2(k)=(trapz(Q_cv2)*(t(2)-t(1)))/p.Period;
 
                 T_w(k+1)=(Q_dot(k)+Q_dot_cv2(k))*1000*p.R_shell+p.T_amb;
