@@ -22,10 +22,10 @@ if p.leakage_on==1
 
     dm_leak=rho*u_bar*A;
 
-    if dm_leak<0
+    if dm_leak>0
         dm_leak_out=0;
         dm_leak_in=abs(dm_leak);
-    elseif dm_leak>0
+    elseif dm_leak<0
         dm_leak_out=abs(dm_leak);
         dm_leak_in=0;
     else

@@ -78,3 +78,44 @@ for z=1:1:length(g)
 
 end
 
+%% Look at massflow plots from different runs
+
+figure
+wksp=char('wksp_ecc_g_13','wksp_ecc_g_14','wksp_ecc_g_15','wksp_ecc_g_16','wksp_ecc_g_17','wksp_ecc_g_18');
+
+for z=1:1:6
+    subplot(2,2,1)
+    load(wksp(z,:),'dm','t','dm_in','dm_out','dm_leak_in','dm_leak_out')
+    plot(dm_leak_in,colors(z,:),'LineWidth',2)
+    xlabel('time')
+    ylabel('m_{dot,leak,in}')
+    hold on    
+end
+
+for z=1:1:6
+    subplot(2,2,2)
+    load(wksp(z,:),'dm','t','dm_in','dm_out','dm_leak_in','dm_leak_out')
+    plot(dm_leak_out,colors(z,:),'LineWidth',2)
+    xlabel('time')
+    ylabel('m_{dot,leak,out}')
+    hold on    
+end
+subplot(2,2,3)
+plot(dm_in,'LineWidth',2)
+ylabel('m_{dot,in}')
+subplot(2,2,4)
+plot(dm_out,'LineWidth',2)
+ylabel('m_{dot,out}')
+
+figure
+
+for z=1:1:6
+    subplot(2,3,z)
+    load(wksp(z,:),'P','V')
+    plot(V,P,'LineWidth',2)
+    xlabel('Volume')
+    ylabel('Pressure')
+end
+
+
+
