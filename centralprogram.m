@@ -249,7 +249,7 @@ try
         a = 1;              %loop iteration variable
         p.P_brent(1) = 10;   %lower power guess
         p.P_brent(2) = 15; %second lower power guess
-        error_brents = 0.0000005;    %0.5 microns
+        error_brents = 0.00000005;    %0.05 microns
         error_stroke = 1;
         
     while error_stroke > error_brents   %a loop, brents method to back out power for full stroke
@@ -963,13 +963,43 @@ try
 
                 %Find indexes of important volumes
                 i_v1=find(V == V_1);
-                i_v2=min(crossing(V,[],V_2));
                 i_v3=find(V == V_3);
-                i_v4=max(crossing(V,[],V_4));
-
+                
+                if i_v1 > i_v3
+                    %Discharge peak is on the left
+                    if max(crossing(V,[],V_2))&& min(crossing(V,[],V_2)) < i_v1
+                        %i_v2 is a low value
+                        i_v2=min(crossing(V,[],V_2));
+                        i_v4=max(crossing(V,[],V_4));
+                        T_d=mean(T(i_v2:i_v3));
+                        h_2=mean(h(i_v2:I_v3));
+                    else
+                        %i_v2 is high
+                        i_v2=max(crossing(V,[],V_2));
+                        i_v4=max(crossing(V,[],V_4));
+                        T_d=mean(cat(2,T(i_v2:end),T(1,i_v3)));
+                        h_2=mean(cat(2,h(i_v2:end),h(1,i_v3)));
+                    end
+                else
+                    %Discharge peak is on the right
+                    if max(crossing(V,[],V_4))&& min(crossing(V,[],V_4)) < i_v3
+                        %i_v4 is low
+                        i_v2=max(crossing(V,[],V_2));
+                        i_v4=min(crossing(V,[],V_4));
+                        T_d=mean(T(i_v2:i_v3));
+                        h_2=mean(h(i_v2:I_v3));                        
+                    else
+                        %i_v4 is high
+                        i_v2=max(crossing(V,[],V_2));
+                        i_v4=min(crossing(V,[],V_4));
+                        T_d=mean(T(i_v2:i_v3));
+                        h_2=mean(h(i_v2:I_v3));                        
+                    end
+                end
+ 
                 %estimate exit temperature and enthalpy
-                T_d = sum(T(i_v2:i_v3))/(i_v3 - i_v2 + 1);
-                h_2 = sum(h(i_v2:i_v3))/(i_v3 - i_v2 + 1);
+                %T_d = sum(T(i_v2:i_v3))/(i_v3 - i_v2 + 1);
+                %h_2 = sum(h(i_v2:i_v3))/(i_v3 - i_v2 + 1);
                 h_2_calc = EOS(T_d,p.P_d,'enthalpy','P');
                 
                 %Boundary work calculations
