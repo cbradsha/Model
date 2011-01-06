@@ -967,7 +967,7 @@ try
                         i_v2=min(crossing(V,[],V_2));
                         i_v4=max(crossing(V,[],V_4));
                         T_d=mean(T(i_v2:i_v3));
-                        h_2=mean(h(i_v2:I_v3));
+                        h_2=mean(h(i_v2:i_v3));
                     else
                         %i_v2 is high
                         i_v2=max(crossing(V,[],V_2));
@@ -982,13 +982,13 @@ try
                         i_v2=max(crossing(V,[],V_2));
                         i_v4=min(crossing(V,[],V_4));
                         T_d=mean(T(i_v2:i_v3));
-                        h_2=mean(h(i_v2:I_v3));                        
+                        h_2=mean(h(i_v2:i_v3));                        
                     else
                         %i_v4 is high
                         i_v2=max(crossing(V,[],V_2));
                         i_v4=min(crossing(V,[],V_4));
                         T_d=mean(T(i_v2:i_v3));
-                        h_2=mean(h(i_v2:I_v3));                        
+                        h_2=mean(h(i_v2:i_v3));                        
                     end
                 end
  
