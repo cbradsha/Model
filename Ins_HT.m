@@ -44,13 +44,11 @@ A_ht=p.D_piston*pi*x_piston;
 
 Q=((A_ht*p.k_r*(T-T_w))/p.D_piston)*(p.A*(Re^p.B)+p.C*L*(T_w/(T-T_w)));
 
-W_dot_friction = (p.c_eff - p.c_gas)*p.x_max*p.f_list^2;
-
 if isnan(Q)
     Q=0;
 end
 
-Q=-Q/1000+W_dot_friction/1000;
+Q=-Q/1000;
 
 
 else

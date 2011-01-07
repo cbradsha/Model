@@ -210,7 +210,7 @@ try
         end
       
     %Time/Volume Calculations
-    error=0.0001;
+    error=0.00001;      %1e-5
     f_list=p.f_begin:p.f_increment:p.f_end;
     w_d_list=f_list*2*pi;
     p.x_stroke_initial = p.x_stroke;
@@ -563,7 +563,6 @@ try
 
                     %% Instantaneous Heat Transfer in control volumes
 
-                    p.f_list=f_list(l);
                     [ Q(i) ] = Ins_HT( T(i),rho(i),T_w(k),V(i),dV(i),x_piston(i),x_dot_piston(i),p);
 
                     [ Q_cv2(i) ] = Ins_HT_cv2( T_cv2(i),rho_cv2(i),T_w(k),V_cv2(i),dV_cv2(i),x_dot_piston(i),p.Q_motor,p);
@@ -701,10 +700,10 @@ try
                 W_dot_friction_ave = sum(W_dot_friction)/(1000*length(W_dot_friction)); %converted to kW
                 
                 %Heat Transfer estimations, numerically integrated.
-                Q_dot(k)=((trapz(Q)*(t(2)-t(1)))/p.Period)+W_dot_friction_ave;
+                Q_dot(k)=((trapz(Q)*(t(2)-t(1)))/p.Period);
                 Q_dot_cv2(k)=(trapz(Q_cv2)*(t(2)-t(1)))/p.Period;
 
-                T_w(k+1)=(-Q_dot(k)-Q_dot_cv2(k))*1000*p.R_shell+p.T_amb;
+                T_w(k+1)=(-Q_dot(k)-Q_dot_cv2(k)+W_dot_friction_ave)*1000*p.R_shell+p.T_amb;
                 
                 %Diagnostic values
                 m_change(k) = m(end) - m(1);
