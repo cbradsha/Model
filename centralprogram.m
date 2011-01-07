@@ -210,7 +210,7 @@ try
         end
       
     %Time/Volume Calculations
-    error=0.0001;
+    error=0.00001;
     f_list=p.f_begin:p.f_increment:p.f_end;
     w_d_list=f_list*2*pi;
     p.x_stroke_initial = p.x_stroke;
