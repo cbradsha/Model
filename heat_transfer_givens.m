@@ -17,7 +17,7 @@ Vel_air=1;                  %Velocity of airflow across compressor, m/s
 D_shell=2*0.0254;           %Outer Diameter of Piston Cylinder, m
 L_shell=10*0.0254;          %Length of Compressor, m
 A_shell=pi*D_shell*L_shell;       %Surface area of compressor shell, m^2
-
+k_air=30e-3;                 %W/m-K , conductivity of air
 mu_air=2*10^-5;             %Dynamic Viscosity of air, kg/m-s
 
 nu_air=mu_air/rho_air;      %Kinematic Viscosity of air, m^2/s
@@ -32,6 +32,6 @@ m=0.466;
 
 Nu_D=C_2*Re_air^m*Pr^(1/3);
 
-h_shell=(Nu_D*k_alum)/D_shell;      %Heat transfer coefficient for outside heat transfer
+h_shell=(Nu_D*k_air)/D_shell;      %Heat transfer coefficient for outside heat transfer
 
 R_shell=1/(h_shell*A_shell);        %Overall thermal resistance from shell to air
