@@ -1319,9 +1319,12 @@ catch ME
 
         save_name = strcat('data_log_',p.save_name);
         save_name = char(save_name);
-        xlswrite(save_name,save_data);
         crash_name = strcat('crash_',save_name);
         save(crash_name)
+        if l>1
+            xlswrite(save_name,save_data);
+        end
+
 
     end
 
