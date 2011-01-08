@@ -247,8 +247,8 @@ try
         %%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         a = 1;              %loop iteration variable
-        p.P_brent(1) = 10;   %lower power guess
-        p.P_brent(2) = 15; %second lower power guess
+        p.P_brent(1) = 15;   %lower power guess
+        p.P_brent(2) = 20; %second lower power guess
         error_brents = 0.00000005;    %0.05 microns
         error_stroke = 1;
         
@@ -695,11 +695,18 @@ try
                 eta_o(k)=(m_dot(k)*(p.h_2_s-p.h_in)*1000)/(p.P_electric*2);      %W_dot is in kW
                 eta_vol(k)=(m_dot(k))/(p.rho_i*f_list(l)*(max(x_piston_m)-min(x_piston_m))*p.Ap);
                 
+                %Power consumed by friction
+                %W_dot_friction = (c_eff - c_gas)*p.x_stroke*f_list(l)^2;
+                %W_dot_friction_ave = sum(W_dot_friction)/(1000*length(W_dot_friction)); %converted to kW
+                W_dot_friction = p.f_friction*F_wall*2*p.x_stroke*f_list(l);
+                W_dot_friction_ave=mean(W_dot_friction)/1000;
+                
                 %Heat Transfer estimations, numerically integrated.
-                Q_dot(k)=(trapz(Q)*(t(2)-t(1)))/p.Period;
+                Q_dot(k)=((trapz(Q)*(t(2)-t(1)))/p.Period);
                 Q_dot_cv2(k)=(trapz(Q_cv2)*(t(2)-t(1)))/p.Period;
 
-                T_w(k+1)=(Q_dot(k)+Q_dot_cv2(k))*1000*p.R_shell+p.T_amb;
+                %equation is under-relaxed , alpha = 1/100;
+                T_w(k+1)=(-Q_dot(k)-Q_dot_cv2(k)+W_dot_friction_ave)*10*(p.R_shell)+p.T_amb;
                 
                 %Diagnostic values
                 m_change(k) = m(end) - m(1);
@@ -1320,7 +1327,6 @@ catch ME
         if l>1
             xlswrite(save_name,save_data);
         end
-
 
     end
 
