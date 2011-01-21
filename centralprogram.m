@@ -247,8 +247,8 @@ try
         %%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         a = 1;              %loop iteration variable
-        p.P_brent(1) = 15;   %lower power guess
-        p.P_brent(2) = 20; %second lower power guess
+        p.P_brent(1) = 1;   %lower power guess
+        p.P_brent(2) = 3; %second lower power guess
         error_brents = 0.00000005;    %0.05 microns
         error_stroke = 1;
         
@@ -967,42 +967,29 @@ try
                 i_v1=find(V == V_1);
                 i_v3=find(V == V_3);
                 
-                if i_v1 > i_v3
-                    %Discharge peak is on the left
-                    if max(crossing(V,[],V_2))&& min(crossing(V,[],V_2)) < i_v1
-                        %i_v2 is a low value
-                        i_v2=min(crossing(V,[],V_2));
-                        i_v4=max(crossing(V,[],V_4));
-                        T_d=mean(T(i_v2:i_v3));
-                        h_2=mean(h(i_v2:i_v3));
-                    else
-                        %i_v2 is high
-                        i_v2=max(crossing(V,[],V_2));
-                        i_v4=max(crossing(V,[],V_4));
-                        T_d=mean(cat(2,T(i_v2:end),T(1,i_v3)));
-                        h_2=mean(cat(2,h(i_v2:end),h(1,i_v3)));
-                    end
-                else
-                    %Discharge peak is on the right
-                    if max(crossing(V,[],V_4))&& min(crossing(V,[],V_4)) < i_v3
-                        %i_v4 is low
-                        i_v2=max(crossing(V,[],V_2));
-                        i_v4=min(crossing(V,[],V_4));
-                        T_d=mean(T(i_v2:i_v3));
-                        h_2=mean(h(i_v2:i_v3));                        
-                    else
-                        %i_v4 is high
-                        i_v2=max(crossing(V,[],V_2));
-                        i_v4=min(crossing(V,[],V_4));
-                        T_d=mean(T(i_v2:i_v3));
-                        h_2=mean(h(i_v2:i_v3));                        
-                    end
+                i_v2_test = crossing(V,[],V_2);  %a vector of length 2
+                i_v4_test = crossing(V,[],V_4);  %a vector of length 2
+                % test above to see which values correspond to the correct
+                % pressure
+                
+                for i=1:1:length(i_v2_test)
+                    diff_P2(i) = abs(P(i_v2_test(i))-p.P_d);
+                    diff_P4(i) = abs(P(i_v4_test(i))-p.P_i);
                 end
- 
+                
+                %indicies of the point where the difference between the
+                %crossover pressure and actual pressure is at a minimum
+                i_v2 = i_v2_test(find(diff_P2 == min(diff_P2)));
+                i_v4 = i_v4_test(find(diff_P4 == min(diff_P4)));
+                
+                T_d = mean(T(i_v2:i_v3));
+                h_2 = EOS(T_d,p.P_d,'enthalpy','P');
+                             
                 %estimate exit temperature and enthalpy
-                %T_d = sum(T(i_v2:i_v3))/(i_v3 - i_v2 + 1);
-                %h_2 = sum(h(i_v2:i_v3))/(i_v3 - i_v2 + 1);
-                h_2_calc = EOS(T_d,p.P_d,'enthalpy','P');
+                if T_d == 0
+                    T_d = mean(cat(2,find_cross(T',P',p.P_d),max(T)));
+                    h_2 = EOS(T_d,p.P_d,'enthalpy','P');
+                end                    
                 
                 %Boundary work calculations
                 W_2_3 = mean(P(i_v2:i_v3))*(V_2 - V_3);
@@ -1056,8 +1043,10 @@ try
             W_dot_shaft_rotation_ave = sum(W_dot_shaft_rotation)/length(W_dot_shaft_rotation);
             
             %Power consumed by friction
-            W_dot_friction = (c_eff - c_gas)*p.x_max*f_list(l)^2;
-            W_dot_friction_ave = sum(W_dot_friction)/length(W_dot_friction);
+            %W_dot_friction = (c_eff - c_gas)*p.x_max*f_list(l)^2;
+            %W_dot_friction_ave = sum(W_dot_friction)/length(W_dot_friction);
+            W_dot_friction = p.f_friction*F_wall*2*p.x_stroke*f_list(l);
+            W_dot_friction_ave=mean(W_dot_friction);
             
             %Total power consumed by compressor, moving from compression
             %chamber to motor

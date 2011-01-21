@@ -29,6 +29,7 @@ p.L_piston_max=L_piston_max;
 p.g=g;
 p.D_piston=D_piston;
 p.x_stroke=x_stroke;
+p.x_stroke_ref=x_stroke;
 p.V_max=V_max;
 p.w_d=w_d;
 p.V_dead_valve=V_dead_valve;

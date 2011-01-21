@@ -5,24 +5,24 @@ if p.brent == 1
     p.x_stroke_brent(a) = p.x_stroke;
     if a >= 2   %a greater than 1
         
-        if p.x_stroke_brent(a)< p.x_max
+        if p.x_stroke_brent(a)< p.x_stroke_ref
             p.below = a;
-        elseif p.x_stroke_brent(a) > p.x_max
+        elseif p.x_stroke_brent(a) > p.x_stroke_ref
             p.above = a;
         end            
         
-        if p.x_stroke_brent(a) < p.x_max && p.x_stroke_brent(a-1) < p.x_max
+        if p.x_stroke_brent(a) < p.x_stroke_ref && p.x_stroke_brent(a-1) < p.x_stroke_ref
             %Secant Step
-            p.P_brent(a+1) = p.P_brent(a) - (p.x_stroke_brent(a) - p.x_max)*(p.P_brent(a) - p.P_brent(a-1))/(p.x_stroke_brent(a) - p.x_stroke_brent(a-1));
+            p.P_brent(a+1) = p.P_brent(a) - (p.x_stroke_brent(a) - p.x_stroke_ref)*(p.P_brent(a) - p.P_brent(a-1))/(p.x_stroke_brent(a) - p.x_stroke_brent(a-1));
             
-        elseif p.x_stroke_brent(a) < p.x_max || p.x_stroke_brent(a-1) < p.x_max
+        elseif p.x_stroke_brent(a) < p.x_stroke_ref || p.x_stroke_brent(a-1) < p.x_stroke_ref
             %Bi-section Step
             p.P_brent(a+1) = (p.P_brent(a)+p.P_brent(a-1))/2;
             
-        elseif p.x_stroke_brent(a) > p.x_max && p.x_stroke_brent(a-1) > p.x_max
+        elseif p.x_stroke_brent(a) > p.x_stroke_ref && p.x_stroke_brent(a-1) > p.x_stroke_ref
             if abs(p.x_stroke_brent(a) - p.x_stroke_brent(a-1)) > 500*error_brents
                 %Secant Step
-                p.P_brent(a+1) = p.P_brent(a) - (p.x_stroke_brent(a) - p.x_max)*(p.P_brent(a) - p.P_brent(a-1))/(p.x_stroke_brent(a) - p.x_stroke_brent(a-1));  
+                p.P_brent(a+1) = p.P_brent(a) - (p.x_stroke_brent(a) - p.x_stroke_ref)*(p.P_brent(a) - p.P_brent(a-1))/(p.x_stroke_brent(a) - p.x_stroke_brent(a-1));  
                 
             else
                 %Bi-section Step using 'below'
@@ -35,8 +35,8 @@ if p.brent == 1
         end
         
         %p.P_brent(a+1) = p.P_brent(a) - (p.x_stroke_brent(a) -
-        %p.x_max)*(p.P_brent(a) - p.P_brent(a-1))/(p.x_stroke_brent(a) - p.x_stroke_brent(a-1));
-        error_stroke = abs(p.x_max - p.x_stroke_brent(a));
+        %p.x_stroke_ref)*(p.P_brent(a) - p.P_brent(a-1))/(p.x_stroke_brent(a) - p.x_stroke_brent(a-1));
+        error_stroke = abs(p.x_stroke_ref - p.x_stroke_brent(a));
         
         a=a+1;
          
@@ -62,69 +62,4 @@ end
 end
 
 
-        %% old brents method
-%         %For Craigs method, solutions must be below desired solution
-%         if (p.x_stroke_brent(a-1)<p.x_max && p.x_stroke_brent(a)<p.x_max)
-%             
-%             if a == 2
-%             
-%                 if p.x_stroke_brent(a) > 0.5*p.x_max
-%                     ln_P_brent = log(p.P_brent);
-%                     coeff = polyfit(ln_P_brent,p.x_stroke_brent,1);            %fit linear fit
-%                     p.P_brent(a+1) = exp((p.x_max - coeff(2))/coeff(1));
-%                     p.P_brent(a+1) = 0.95*p.P_brent(a+1);
-%                 else
-%                     %if the stroke from the first two steps are very small,
-%                     %just take a secant step
-%                     p.P_brent(a+1) = p.P_brent(a) - (p.x_stroke_brent(a) - p.x_max)*(p.P_brent(a) - p.P_brent(a-1))/(p.x_stroke_brent(a) - p.x_stroke_brent(a-1));
-%                     
-%                 end
-%             
-%             elseif a >= 3
-%                 
-%                 diff_stroke = abs(p.x_stroke_brent(a-1) - p.x_stroke_brent(a))/p.x_stroke_brent(a);
-%                 
-%                 if p.x_stroke_brent(a) > 0.8*p.x_max
-%                     ln_P_brent = log(p.P_brent);
-%                     coeff = polyfit(ln_P_brent,p.x_stroke_brent,1);            %fit linear fit
-%                     p.P_brent(a+1) = exp((p.x_max - coeff(2))/coeff(1));
-%                     
-%                 else
-%                     %p.P_brent(a+1) = 1.3*p.P_brent(a);
-%                     
-%                     p.P_brent(a+1) = p.P_brent(a) - (p.x_stroke_brent(a) - p.x_max)*(p.P_brent(a) - p.P_brent(a-1))/(p.x_stroke_brent(a) - p.x_stroke_brent(a-1));
-%                     
-%                 end
-%                 
-%                 %error_stroke = 0;           
-%                 
-% %             elseif p.x_stroke_brent(a) >= p.x_max
-% %                 
-% %                 p.P_brent(a+1) = p.P_brent(a)*0.95;                        %reduce by 5%
-% %                 
-% %             elseif p.x_stroke_brent(a) < p.x_max
-% %                 
-% %                 if p.x_stroke_brent(a) > p.x_stroke_brent(a-1)
-% %                     
-% %                     ln_P_brent = ln(p.P_brent);
-% %                     coeff = polyfit(ln_P_brent,p.x_stroke_brent,1);            %fit linear fit
-% %                     p.P_brent(a+1) = exp((p.x_max - coeff(2))/coeff(1));
-% %                     
-% %                 elseif 
-% 
-%             end
-%            
-%             
-%             error_stroke = abs(p.x_max - p.x_stroke_brent(a))/p.x_max;
-%             a=a+1; 
-%             
-%         %if solutions are not both below desired solution   
-%         else
-%             
-%             p.P_brent(a-1) = p.P_brent(a-1)*0.75;
-%             p.P_brent(a) = p.P_brent(a)*0.75;
-%             error_stroke = 1;
-%             a=1;
-%                         
-%         end    %end straddle logic
-%         %keyboard
+  

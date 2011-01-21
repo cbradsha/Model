@@ -32,13 +32,13 @@ if p.vibration_on==1
     if linear == 1
     
         theta_tmp = atan(p.g/p.L_1);
-        p.F_wall=(1/p.L_1)*(p.k_mech*(p.x_max-p.ecc_1*theta_tmp)*p.ecc_1);
+        p.F_wall=(1/p.L_1)*(p.k_mech*(p.x_stroke_ref-p.ecc_1*theta_tmp)*p.ecc_1);
         %k_gas adjusted for max stroke
-        k_gas=((p.P_d-p.P_i)*p.Ap*1000)/p.x_max;  %Gas spring rate, linear estimate
-        p.V_max=p.Ap*p.x_max;
+        k_gas=((p.P_d-p.P_i)*p.Ap*1000)/p.x_stroke_ref;  %Gas spring rate, linear estimate
+        p.V_max=p.Ap*p.x_stroke_ref;
         W_gas=((p.gamma*p.P_i*p.V_max)/(p.gamma-1))*((p.P_d/p.P_i)^((p.gamma-1)/p.gamma)-1);        %Work done on gas in one cycle, kJ
-        c_friction=(4*p.f_friction*p.F_wall)/(p.w_d*p.x_max*pi);     %effective damping due to dry friction in cylinder   
-        c_gas=(W_gas*1000)/(p.w_d*p.x_max^2*pi);                %effecitve damping due to work done on gas, 1000 to convert work to J, (N-s)/m
+        c_friction=(4*p.f_friction*p.F_wall)/(p.w_d*p.x_stroke_ref*pi);     %effective damping due to dry friction in cylinder   
+        c_gas=(W_gas*1000)/(p.w_d*p.x_stroke_ref^2*pi);                %effecitve damping due to work done on gas, 1000 to convert work to J, (N-s)/m
 
     else
         
@@ -95,7 +95,7 @@ if p.vibration_on==1
 %     dx_total=[x_piston_m_1,x_dot_piston_1,theta_1,theta_dot_1]+(1/6)*(k1+2*k2+2*k3+k4);
 
     %%%%%%%%%%%%%%%%%%
-    % Start - dx_vibration replacement
+    %% Start - dx_vibration replacement
     %%%%%%%%%%%%%%%%%%
 
     %Vector of Timesteps
@@ -180,7 +180,7 @@ if p.vibration_on==1
     k4 = p.t_step*dx;
     
     %%%%%%%%%%%%%%%%%%%%%%%%
-    % End, dx_vibration replacement
+    %% End, dx_vibration replacement
     %%%%%%%%%%%%%%%%%%%%%%%%%
     
     dx_total=[x_piston_m_1,x_dot_piston_1,theta_1,theta_dot_1]+(1/6)*(k1+2*k2+2*k3+k4);
