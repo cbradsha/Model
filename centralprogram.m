@@ -165,7 +165,7 @@ try
         if pc_flag == 0
 
             %pulling input data from inputs.xls
-            range=strcat('B',num2str(z+2),':','BI',num2str(z+2));
+            range=strcat('B',num2str(z+2),':','BT',num2str(z+2));
             [num_inputs,txt_inputs]=xlsread('inputs.xls',range);
 
             %creating my variable structure
@@ -199,7 +199,7 @@ try
             end
 
             %num_inputs = input_data(z+2,2:61);
-            num_inputs = input_data(z,2:61);
+            num_inputs = input_data(z,2:72);
 
             %Create structure of constant variables
             [p]=create_struct(num_inputs,txt_inputs);
@@ -860,11 +860,15 @@ try
                 P_electric_save(l) = p.P_brent(a);
                 p.P_electric = p.P_brent(a);      
                 
-                if a == 50
+                if a == 15
+                    error_brents = 0.0000005; %0.5 micron
+                elseif a == 20
+                    error_brents = 0.000001; % 1 micron
+                elseif a == 30
                     error_brents= 0.000005; % 5 microns
-                elseif a==60
+                elseif a==40
                     error_brents= 0.00001; %10 microns
-                elseif a==80
+                elseif a==50
                     error_brents= 0.00005; %50 microns
                 elseif a>100
                     error_brents= 1;
@@ -1254,7 +1258,7 @@ try
             %set(gcf,'Visible','off')
             subplot(3,3,1),plot(t,T_cv2);title('Temperature v. Time for CV2');
             subplot(3,3,2),plot(t,P_cv2);title('Pressure v. Time for CV2');
-            subplot(3,3,3),plot(t,dm_leak_in);title('Leakage Massflow In v. Time for CV2');
+            subplot(3,3,3),plot(t,dm_leak_out);title('Leakage Massflow In v. Time for CV2');
             subplot(3,3,4),plot(t,V_cv2);title('Volume v. Time for CV2');
             subplot(3,3,5),plot(t,rho_cv2);title('Density v. Time');
             subplot(3,3,6),plot(t,h_cv2);title('Enthalpy v. Time');

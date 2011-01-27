@@ -34,9 +34,10 @@ if p.leakage_on==1
     
     if Ma_cv2 >= 0.3    %Compressible flow
         
-        Pr=max(P/P_cv2,P_cv2/P);  %grab the PR greater than one
+        Pr=min(P/P_cv2,P_cv2/P);  %grab the PR smaller than one
         
-        if P/P_cv2 >= P_cv2/P  %flow into CV2
+        
+        if P >= P_cv2  %flow into CV2
             Ma_cv2=sqrt((2/(p.gamma-1))*((Pr^((1-p.gamma)/p.gamma))-1));
             if Ma_cv2>1
                 Ma_cv2=1;
@@ -44,7 +45,7 @@ if p.leakage_on==1
             u_bar=sqrt(p.gamma*p.R*T*1000)*Ma_cv2;   %T because this flow comes from compression chamber
                 
                 
-        elseif P_cv2/P > P/P_cv2  %flow into compression chamber
+        elseif P < P_cv2  %flow into compression chamber
             Ma_cv2=sqrt((2/(p.gamma-1))*((Pr^((1-p.gamma)/p.gamma))-1));
             if Ma_cv2>1
                 Ma_cv2=1;
