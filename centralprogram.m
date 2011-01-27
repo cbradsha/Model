@@ -247,8 +247,8 @@ try
         %%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         a = 1;              %loop iteration variable
-        p.P_brent(1) = 1;   %lower power guess
-        p.P_brent(2) = 3; %second lower power guess
+        p.P_brent(1) = 10;   %lower power guess
+        p.P_brent(2) = 15; %second lower power guess
         error_brents = 0.00000005;    %0.05 microns
         error_stroke = 1;
         

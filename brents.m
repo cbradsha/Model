@@ -17,7 +17,7 @@ if p.brent == 1
         if p.x_stroke_brent(a) < p.x_stroke_ref && p.x_stroke_brent(a-1) < p.x_stroke_ref
             %Secant Step
             p.P_brent(a+1) = p.P_brent(a) - (p.x_stroke_brent(a) - p.x_stroke_ref)*(p.P_brent(a) - p.P_brent(a-1))/(p.x_stroke_brent(a) - p.x_stroke_brent(a-1));
-            p.method(a)=1;  %1 is secant, 2 is bisection
+            p.method_n(a)=1;  %1 is secant, 2 is bisection
             
         %One below, one above (straddled), employ brents method    
         elseif p.x_stroke_brent(a) < p.x_stroke_ref || p.x_stroke_brent(a-1) < p.x_stroke_ref
@@ -25,7 +25,7 @@ if p.brent == 1
             if a==2
                 %Bi-section Step
                 p.P_brent(a+1) = (p.P_brent(a)+p.P_brent(a-1))/2;
-                p.method(a)=2;
+                p.method_n(a)=2;
             else   %Brents method start
                 %if the current iterate is above the reference
                 if p.P_brent(a) >= p.x_stroke_ref
@@ -39,10 +39,10 @@ if p.brent == 1
 
                     if s < b_k && s > m
                         p.P_brent(a+1)=s;
-                        p.method(a)=1;
+                        p.method_n(a)=1;
                     else
                         p.P_brent(a+1)=m;
-                        p.method(a)=2;
+                        p.method_n(a)=2;
                     end
                 %if the current iterate is below the reference
                 else
@@ -56,10 +56,10 @@ if p.brent == 1
 
                     if s < b_k && s > m
                         p.P_brent(a+1)=s;
-                        p.method(a)=1;
+                        p.method_n(a)=1;
                     else
                         p.P_brent(a+1)=m;
-                        p.method(a)=2;
+                        p.method_n(a)=2;
                     end
                     
                 end
@@ -68,24 +68,24 @@ if p.brent == 1
                 
                 if a>=3
                     if abs(p.P_brent(a)-p.P_brent(a-1)) < tol
-                        if p.method(a-1) == 1  %used secant method
+                        if p.method_n(a-1) == 1  %used secant method
                             if abs(p.P_brent(a-1)-p.P_brent(a-2)) < tol
                                 p.P_brent(a+1)=m; 
-                                p.method(a)=2;
+                                p.method_n(a)=2;
                             end
                         else
                             p.P_brent(a+1)=m;
-                            p.method(a)=2;
+                            p.method_n(a)=2;
                         end
                     elseif abs(s-b_k) > 0.5*abs(b_k-b_k_1)
-                        if p.method(a-1) == 1  %used secant method
+                        if p.method_n(a-1) == 1  %used secant method
                             if abs(s-b_k) > 0.5*abs(b_k_1-p.P_brent(a-2))
                                 p.P_brent(a+1)=m; 
-                                p.method(a)=2;
+                                p.method_n(a)=2;
                             end
                         else
                             p.P_brent(a+1)=m;
-                            p.method(a)=2;
+                            p.method_n(a)=2;
                         end
                     end
                 end
@@ -110,10 +110,10 @@ if p.brent == 1
 
                     if s < b_k && s > m
                         p.P_brent(a+1)=s;
-                        p.method(a)=1;
+                        p.method_n(a)=1;
                     else
                         p.P_brent(a+1)=m;
-                        p.method(a)=2;
+                        p.method_n(a)=2;
                     end
                 %if the current iterate is below the reference
                 else
@@ -127,10 +127,10 @@ if p.brent == 1
 
                     if s < b_k && s > m
                         p.P_brent(a+1)=s;
-                        p.method(a)=1;
+                        p.method_n(a)=1;
                     else
                         p.P_brent(a+1)=m;
-                        p.method(a)=2;
+                        p.method_n(a)=2;
                     end
                     
                 end
@@ -139,24 +139,24 @@ if p.brent == 1
                 
                 if a>=3
                     if abs(p.P_brent(a)-p.P_brent(a-1)) < tol
-                        if p.method(a-1) == 1  %used secant method
+                        if p.method_n(a-1) == 1  %used secant method
                             if abs(p.P_brent(a-1)-p.P_brent(a-2)) < tol
                                 p.P_brent(a+1)=m; 
-                                p.method(a)=2;
+                                p.method_n(a)=2;
                             end
                         else
                             p.P_brent(a+1)=m;
-                            p.method(a)=2;
+                            p.method_n(a)=2;
                         end
                     elseif abs(s-b_k) > 0.5*abs(b_k-b_k_1)
-                        if p.method(a-1) == 1  %used secant method
+                        if p.method_n(a-1) == 1  %used secant method
                             if abs(s-b_k) > 0.5*abs(b_k_1-p.P_brent(a-2))
                                 p.P_brent(a+1)=m; 
-                                p.method(a)=2;
+                                p.method_n(a)=2;
                             end
                         else
                             p.P_brent(a+1)=m;
-                            p.method(a)=2;
+                            p.method_n(a)=2;
                         end
                     end
                 end
@@ -176,7 +176,7 @@ if p.brent == 1
         a = a+1;
         p.above = 0;
         p.below = 0;
-        p.method=0;
+        p.method_n=0;
         %keyboard
     end  % end entry logic
     
