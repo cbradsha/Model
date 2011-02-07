@@ -20,6 +20,6 @@ beta = num_inputs(71); %beta factor
 %beta = 12 (g - 0 to 100 microns)
 %f_friction = 0.0000612*g^2 - 0.0071386*g + 0.3779207;
 
-f_friction =(0.0088141/beta)*g^2 - (0.0856637/beta)*g + 0.3779207;
+f_friction =(0.0088141/beta^2)*g^2 - (0.0856637/beta)*g + 0.3779207;
 end
 

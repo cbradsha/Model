@@ -165,7 +165,7 @@ try
         if pc_flag == 0
 
             %pulling input data from inputs.xls
-            range=strcat('B',num2str(z+2),':','BT',num2str(z+2));
+            range=strcat('B',num2str(z+2),':','BV',num2str(z+2));
             [num_inputs,txt_inputs]=xlsread('inputs.xls',range);
 
             %creating my variable structure
@@ -199,7 +199,7 @@ try
             end
 
             %num_inputs = input_data(z+2,2:61);
-            num_inputs = input_data(z,2:72);
+            num_inputs = input_data(z,2:74);
 
             %Create structure of constant variables
             [p]=create_struct(num_inputs,txt_inputs);
@@ -247,8 +247,16 @@ try
         %%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         a = 1;              %loop iteration variable
-        p.P_brent(1) = 10;   %lower power guess
-        p.P_brent(2) = 15; %second lower power guess
+        if isnan(num_inputs(72)) && isnan(num_inputs(73)) 
+            p.P_brent(1) = 10;   %lower power guess
+            p.P_brent(2) = 15; %second lower power guess
+        elseif (isnan(num_inputs(72)) || isnan(num_inputs(73)))
+            error('One Brents method input but not the other, please input two guess values');
+        else
+            p.P_brent(1) = num_inputs(72);
+            p.P_brent(2) = num_inputs(73);
+        end
+        
         error_brents = 0.00000005;    %0.05 microns
         error_stroke = 1;
         
@@ -843,11 +851,8 @@ try
                         p.P_electric = p.P_electric +1;
                         disp('Increase P_electric =')
                         disp(p.P_electric)
-                    elseif p.x_stroke > 0.0254
-                        %p.P_electric = p.P_electric -1;
                     end
                 end
-
             end                                 %End of k while loop
 
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -865,11 +870,21 @@ try
                 elseif a == 20
                     error_brents = 0.000001; % 1 micron
                 elseif a == 30
-                    error_brents= 0.000005; % 5 microns
+                    error_brents = 0.000005; % 5 microns
+                elseif a==39
+                    error_brents = 0.00001; %10 microns
+                    %Find location of minimum error, re-run using that
+                    er=abs(p.x_stroke_brent-p.x_stroke_ref);
+                    er_min=min(er);
+                    ind_er=find(er==er_min);
+                    p.P_electric=p.P_brent(ind_er);
+                    P_electric_save(l)=p.P_brent(ind_er);
                 elseif a==40
-                    error_brents= 0.00001; %10 microns
-                elseif a==50
-                    error_brents= 0.00005; %50 microns
+                    error_brents = 1;
+                    %overwrite what brent's method calculates
+                    p.P_electric = p.P_brent(a-1);
+                    P_electric_save(l)=p.P_brent(a-1);
+                    
                 elseif a>100
                     error_brents= 1;
                 end
@@ -970,12 +985,11 @@ try
                 %Find indexes of important volumes
                 i_v1=find(V == V_1);
                 i_v3=find(V == V_3);
-                
                 i_v2_test = crossing(V,[],V_2);  %a vector of length 2
                 i_v4_test = crossing(V,[],V_4);  %a vector of length 2
+                
                 % test above to see which values correspond to the correct
                 % pressure
-                
                 for i=1:1:length(i_v2_test)
                     diff_P2(i) = abs(P(i_v2_test(i))-p.P_d);
                     diff_P4(i) = abs(P(i_v4_test(i))-p.P_i);
@@ -983,6 +997,7 @@ try
                 
                 %indicies of the point where the difference between the
                 %crossover pressure and actual pressure is at a minimum
+                
                 i_v2 = i_v2_test(find(diff_P2 == min(diff_P2)));
                 i_v4 = i_v4_test(find(diff_P4 == min(diff_P4)));
                 
@@ -997,7 +1012,8 @@ try
                 
                 %Boundary work calculations
                 W_2_3 = mean(P(i_v2:i_v3))*(V_2 - V_3);
-                W_4_1 = mean(P(i_v1:i_v4))*(V_1 - V_4);
+                %W_4_1 = mean(P(i_v1:i_v4))*(V_1 - V_4);
+                W_4_1=mean(cat(2,P(i_v4:end),P(1:i_v1)))*(V_1-V_4);
                 W_1_2 = mean(mean(P(i_v1:end)))*(V_1 - V_2);
                 W_3_4 = mean(P(i_v3:i_v4))*(V_4 - V_3);
                 %W_4_1 = sum(P(i_v4:end).*V(i_v4:end))/(length(P) - i_v4 + 1);
@@ -1144,9 +1160,9 @@ try
                 T_w(k-1),k-1,Q_dot(k-1),Q_dot_cv2(k-1),p.P_d/p.P_i,dT_loop(k-1),drho_loop(k-1),dT_cv2_loop(k-1),drho_cv2_loop(k-1),...
                 dx_piston,dm_dot_cycle,dT_w,p.M_mov,(max(x_piston_m)-min(x_piston_m)),p.P_electric,f_resonant_calculated,w_d_resonant_calculated,p.k_eff,eta_is,...
                 eta_o_test,W_dot_shaft_ave,W_dot_shaft_rotation_ave,W_dot_friction_ave,W_dot_total_ave,W_dot_stored_max,W_dot_suc_loss,W_dot_dis_loss,...
-                W_dot_leakage_loss,W_dot_leak,mean(x_piston_m)};
+                W_dot_leakage_loss,W_dot_leak,mean(x_piston_m),p.V_dead_valve,a,error_stroke};
 
-            range_2=strcat('A',num2str(l+rows),':','BB',num2str(l+rows));
+            range_2=strcat('A',num2str(l+rows),':','BE',num2str(l+rows));
             xlswrite1('data_log.xls',save_data,range_2)
 
             save_name = strcat('wksp_',p.save_name);
@@ -1161,7 +1177,7 @@ try
                 T_w(k-1),k-1,Q_dot(k-1),Q_dot_cv2(k-1),p.P_d/p.P_i,dT_loop(k-1),drho_loop(k-1),dT_cv2_loop(k-1),drho_cv2_loop(k-1),...
                 dx_piston,dm_dot_cycle,dT_w,p.M_mov,(max(x_piston_m)-min(x_piston_m)),p.P_electric,f_resonant_calculated,w_d_resonant_calculated,p.k_eff,eta_is,...
                 eta_o_test,W_dot_shaft_ave,W_dot_shaft_rotation_ave,W_dot_friction_ave,W_dot_total_ave,W_dot_stored_max,W_dot_suc_loss,W_dot_dis_loss,...
-                W_dot_leakage_loss,W_dot_leak,mean(x_piston_m)};
+                W_dot_leakage_loss,W_dot_leak,mean(x_piston_m),p.V_dead_valve,a,error_stroke};
 
 
             save_data(z,:) = cell2mat(save_data_tmp);

@@ -3,7 +3,7 @@ function [alpha,k_r,A,B,C,T_w_i,R_shell,T_amb] = heat_transfer_givens(T_i,num_in
 %Inputs to the heat transfer model
 
 alpha=0.00000055;         %Thermal diffusivity in m^2
-k_alum=160;               %Thermal conductivity of R134a, W/m-K
+k_alum=160;               %Thermal conductivity of aluminum, W/m-K
 A=0.25;
 B=0.65;
 C=0.25;                   %Coefficients from correlation
