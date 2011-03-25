@@ -1,5 +1,5 @@
 
-function [alpha,k_r,A,B,C,T_w_i,R_shell,T_amb] = heat_transfer_givens(T_i,num_inputs,txt_inputs)
+function [alpha,k_r,A,B,C,T_w_i,R_shell,T_amb,t_shell,k_alum] = heat_transfer_givens(T_i,num_inputs,txt_inputs)
 %Inputs to the heat transfer model
 
 alpha=0.00000055;         %Thermal diffusivity in m^2
@@ -35,3 +35,6 @@ Nu_D=C_2*Re_air^m*Pr^(1/3);
 h_shell=(Nu_D*k_air)/D_shell;      %Heat transfer coefficient for outside heat transfer
 
 R_shell=1/(h_shell*A_shell);        %Overall thermal resistance from shell to air
+
+t_shell = 0.0254;      %Thickness of compressor shell
+%keyboard

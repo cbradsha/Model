@@ -6,7 +6,7 @@ function [p]=create_struct(num_inputs,txt_inputs)
 [T_i,rho_i,P_i,R,P_d,f,x_o,t_step,gamma,x_d,method,n,V_cv2_i,L_piston_max,g,D_piston,x_stroke,V_max,w_d,V_dead_valve,eta_motor,Ap,P_electric,x_max,leakage_on,mass_on,vibration_order,vibration_on,valve_dynamics_on,D_cv2,L_cv2,heat_transfer_on,h_2_s,brent,T_s_2] = givens(num_inputs,txt_inputs);
 [d_valve_suction,d_valve_discharge,C_d,A_suction_valve,A_discharge_valve,I_discharge,I_suction,k_discharge,k_suction,m_eff_discharge,m_eff_suction,A_suction,A_discharge,x_tr_suction,x_tr_discharge,x_stop,a_suction,a_discharge,d_suction,d_discharge] = valve_inputs(num_inputs,txt_inputs);
 [ M_mov,J,L_1,L_2,k_mech,f_friction,x_piston_i,x_dot_piston_i,theta_i,theta_dot_i,x_piston_m_i,J_a,ecc_1,ecc_2,L_load_1,L_load_2 ] = vibration_givens(x_o,vibration_order,num_inputs,txt_inputs);
-[alpha,k_r,A,B,C,T_w_i,R_shell,T_amb] = heat_transfer_givens(T_i,num_inputs,txt_inputs);
+[alpha,k_r,A,B,C,T_w_i,R_shell,T_amb,t_shell,k_alum] = heat_transfer_givens(T_i,num_inputs,txt_inputs);
 
 %%%%%%
 %From General Givens
@@ -110,6 +110,8 @@ p.T_w_i=T_w_i;
 p.T_w_cv2_i=T_w_i;
 p.R_shell=R_shell;
 p.T_amb=T_amb;
+p.t_shell=t_shell;
+p.k_alum=k_alum;
 
 
 %%%%%%

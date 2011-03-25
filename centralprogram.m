@@ -714,7 +714,22 @@ try
                 Q_dot_cv2(k)=(trapz(Q_cv2)*(t(2)-t(1)))/p.Period;
 
                 %equation is under-relaxed , alpha = 1/100;
-                T_w(k+1)=(-Q_dot(k)-Q_dot_cv2(k)+W_dot_friction_ave)*10*(p.R_shell)+p.T_amb;
+                T_w(k+1)=(-Q_dot(k)-Q_dot_cv2(k)+W_dot_friction_ave)*1000*(p.R_shell)+p.T_amb;
+                T_w(k+1)=315;
+                
+                Q_dot_in=(-Q_dot(k)-Q_dot_cv2(k)+W_dot_friction_ave)*1000;
+                T_w_test(k)=Q_dot_in*p.R_shell+p.T_amb;
+                %figure(32)
+                %plot(Q_cv2)
+                %keyboard
+                
+%                 if abs(T_w(k+1) - T_w(k)) > 0.1*T_w(k)
+%                     if T_w(k+1) - T_w(k)< 0
+%                         T_w(k+1) = T_w(k)-0.1*T_w(k);
+%                     elseif T_w(k+1) - T_w(k) > 0
+%                         T_w(k+1) = T_w(k)+0.1*T_w(k);
+%                     end
+%                 end
                 
                 %Diagnostic values
                 m_change(k) = m(end) - m(1);
@@ -944,6 +959,7 @@ try
             c_gas = c_gas(1:length(t));
             x_dot_dot_piston = x_dot_dot_piston(1:length(t));
             F_gas = F_gas(1:length(t));
+            F_wall=F_wall(1:length(t));
 
             T_w = T_w(1:k-1);
             x_stroke_save = x_stroke_save(1:k-1);
@@ -1067,6 +1083,14 @@ try
             %W_dot_friction_ave = sum(W_dot_friction)/length(W_dot_friction);
             W_dot_friction = p.f_friction*F_wall*2*p.x_stroke*f_list(l);
             W_dot_friction_ave=mean(W_dot_friction);
+            
+            
+            %Friction, trial 2
+%             dx_calc = x_piston(1:end-1)-x_piston(2:end);
+%             W_friction=p.f_friction*F_wall(1:end-1).*dx_calc;
+%             W_dot_friction=abs(W_friction)*f_list(1);
+%             W_dot_friction_ave = sum(W_dot_friction);
+
             
             %Total power consumed by compressor, moving from compression
             %chamber to motor
